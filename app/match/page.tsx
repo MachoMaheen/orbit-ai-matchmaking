@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@stackframe/stack';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -9,6 +10,7 @@ import { Loader2, GraduationCap, Briefcase, MapPin, DollarSign } from 'lucide-re
 import { toast } from 'react-hot-toast';
 
 export default function MatchPage() {
+    const user = useUser({ or: 'redirect' }); // Redirect if not authenticated
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
