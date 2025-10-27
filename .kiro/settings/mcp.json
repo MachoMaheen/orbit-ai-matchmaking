@@ -1,0 +1,81 @@
+{
+    "mcpServers": {
+        "Neon": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@neondatabase/mcp-server-neon",
+                "start",
+                "napi_enzg6m504hz36rf2xtn31k4qyubf51vc0hblcvnm6zgw4yltw25f72mufnnh4pez"
+            ]
+        },
+        "fetch": {
+            "command": "uvx",
+            "args": [
+                "mcp-server-fetch"
+            ],
+            "env": {},
+            "disabled": true,
+            "autoApprove": []
+        },
+        "Figma Dev Mode MCP": {
+            "type": "http",
+            "url": "http://127.0.0.1:3845/sse"
+        },
+        "context7": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@upstash/context7-mcp@latest"
+            ],
+            "gallery": true
+        },
+        "sequentialthinking": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-sequential-thinking@latest"
+            ],
+            "gallery": true
+        },
+        "solanaMcp": {
+            "command": "npx",
+            "args": [
+                "mcp-remote",
+                "https://mcp.solana.com/mcp"
+            ]
+        },
+        "memory": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-memory@latest"
+            ],
+            "env": {
+                "MEMORY_FILE_PATH": "${input:memory_file_path}"
+            },
+            "gallery": true
+        },
+        "webflow": {
+            "type": "http",
+            "url": "https://mcp.webflow.com/sse",
+            "gallery": true
+        },
+        "render": {
+            "command": "npx",
+            "args": [
+                "mcp-remote",
+                "https://mcp.render.com/mcp",
+                "--header",
+                "Authorization: Bearer rnd_FTEt21TNimPZIymoNMDE8mcmLvqH"
+            ],
+            "env": {
+                "RENDER_API_KEY": "rnd_FTEt21TNimPZIymoNMDE8mcmLvqH"
+            }
+        }
+    }
+}

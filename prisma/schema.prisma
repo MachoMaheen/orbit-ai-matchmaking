@@ -1,0 +1,353 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Authentication Models
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          String    @default("student")
+  
+  accounts      Account[]
+  sessions      Session[]
+  profile       UserProfile?
+  searches      MatchSearch[]
+  essays        Essay[]
+  interviews    InterviewSession[]
+  familyMembers FamilyMember[]
+  notifications Notification[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+
+// User Profile
+model UserProfile {
+  id                     String   @id @default(cuid())
+  userId                 String   @unique
+  user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Academic
+  gmatScore              Int?
+  greVerbal              Int?
+  greQuant               Int?
+  gpa                    Float
+  undergraduateMajor     String?
+  undergraduateSchool    String?
+  
+  // Professional
+  workExperienceMonths   Int
+  industry               String?
+  currentRole            String?
+  yearsLeadership        Int?
+  
+  // Preferences
+  targetProgram          String
+  targetSpecialization   String?
+  preferredLocations     String[]
+  budgetMax              Int?
+  
+  // Holistic factors
+  extracurriculars       String? @db.Text
+  leadership             String? @db.Text
+  uniqueFactors          String? @db.Text
+  
+  // Metadata
+  profileStrength        Int      @default(0)
+  completeness           Int      @default(0)
+  
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
+
+// Universities
+model University {
+  id                      String   @id @default(cuid())
+  name                    String
+  location                String
+  state                   String
+  country                 String   @default("USA")
+  website                 String?
+  
+  // Rankings
+  overallRanking          Int?
+  programRanking          Int?
+  
+  // Admissions
+  acceptanceRate          Float
+  avgGmat                 Int?
+  avgGreVerbal            Int?
+  avgGreQuant             Int?
+  avgGpa                  Float
+  avgWorkExpMonths        Int
+  
+  // Program
+  programType             String
+  programDurationMonths   Int
+  classSize               Int?
+  internationalPercent    Float?
+  womenPercent            Float?
+  
+  // Financial
+  tuitionAnnualUSD        Int
+  totalCostAnnualUSD      Int
+  avgFinancialAidUSD      Int?
+  needBlind               Boolean  @default(false)
+  
+  // Career
+  avgStartingSalaryUSD    Int
+  avg10YearSalaryUSD      Int
+  employmentRate          Float
+  topRecruiters           String[]
+  
+  // Campus
+  studentToFaculty        Float?
+  diversityScore          Float?
+  campusType              String?
+  
+  // AI Metrics
+  successProbability      Float    @default(0)
+  studentSatisfaction     Float    @default(0)
+  
+  specializations         UniversitySpecialization[]
+  scholarships            Scholarship[]
+  
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  
+  @@index([programType])
+  @@index([overallRanking])
+  @@index([acceptanceRate])
+}
+
+model UniversitySpecialization {
+  id             String     @id @default(cuid())
+  universityId   String
+  university     University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  specialization String
+  ranking        Int?
+  
+  @@index([universityId])
+}
+
+// Scholarships
+model Scholarship {
+  id                 String     @id @default(cuid())
+  universityId       String?
+  university         University? @relation(fields: [universityId], references: [id], onDelete: SetNull)
+  
+  name               String
+  provider           String
+  amountUSD          Int
+  type               String
+  description        String     @db.Text
+  eligibility        String     @db.Text
+  requirements       String[]
+  
+  minGpa             Float?
+  minGmat            Int?
+  targetDemographic  String?
+  
+  deadline           DateTime?
+  renewable          Boolean    @default(false)
+  applicationUrl     String?
+  
+  applicationDifficulty Int @default(5)
+  successRate        Float      @default(0)
+  
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  
+  @@index([universityId])
+  @@index([type])
+  @@index([deadline])
+}
+
+// Match Searches
+model MatchSearch {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  searchParams Json
+  results      Json
+  matchCount   Int
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// Essays
+model Essay {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  title       String
+  content     String   @db.Text
+  promptType  String
+  
+  // Analysis Results
+  clarityScore Int?
+  uniquenessScore Int?
+  emotionalImpact Float?
+  suggestedImprovements String? @db.Text
+  sentimentAnalysis Json?
+  
+  uploadedAt  DateTime @default(now())
+  analyzedAt  DateTime?
+  
+  @@index([userId])
+}
+
+// Interview Practice
+model InterviewSession {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  universityId String?
+  questionType String
+  
+  // Recording
+  recordingUrl String?
+  transcript   String? @db.Text
+  
+  // Feedback
+  deliveryScore Int?
+  contentScore  Int?
+  engagementScore Int?
+  suggestedImprovements String? @db.Text
+  
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+  
+  @@index([userId])
+}
+
+// Family Collaboration
+model FamilyMember {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  email       String
+  name        String
+  relationship String
+  
+  canView     Boolean  @default(true)
+  canComment  Boolean  @default(true)
+  
+  invitedAt   DateTime @default(now())
+  acceptedAt  DateTime?
+  
+  @@unique([userId, email])
+  @@index([userId])
+}
+
+// Notifications
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type        String
+  title       String
+  message     String   @db.Text
+  data        Json?
+  
+  read        Boolean  @default(false)
+  readAt      DateTime?
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([userId])
+  @@index([read])
+}
+
+// Peer Data for Benchmarking
+model PeerData {
+  id                String   @id @default(cuid())
+  
+  gmatRange         String
+  gpaRange          String
+  workExpRange      String
+  industry          String?
+  background        String?
+  
+  universitiesApplied String[]
+  universitiesAdmitted String[]
+  scholarshipsReceived Int?
+  scholarshipAmount Int?
+  
+  admissionRate     Float    @default(0)
+  
+  createdAt         DateTime @default(now())
+  
+  @@index([gmatRange])
+  @@index([gpaRange])
+}
+
+// Market Intelligence
+model MarketIntelligence {
+  id                String   @id @default(cuid())
+  
+  programType       String
+  specialization    String?
+  
+  // Current Stats
+  avgAcceptance     Float
+  competitionLevel  String
+  
+  // Trends
+  applicationsTrend Float
+  acceptanceRateTrend Float
+  salaryTrend       Float
+  
+  // Industry
+  topHiringIndustries String[]
+  demandScore       Float
+  
+  lastUpdated       DateTime @default(now())
+  
+  @@unique([programType, specialization])
+}
