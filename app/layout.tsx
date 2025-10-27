@@ -16,6 +16,14 @@ const inter = Inter({
 export const metadata: Metadata = {
     title: 'Orbit RFM Pro - Revolutionary University Matching',
     description: 'AI-powered university matching with ML predictions, ROI calculator, and scholarship matching',
+    keywords: ['university matching', 'college admissions', 'AI matching', 'scholarship finder'],
+    authors: [{ name: 'Orbit RFM Pro' }],
+};
+
+export const viewport = {
+    width: 'device-width',
+    initialScale: 1,
+    themeColor: '#2563eb',
 };
 
 function NavigationSkeleton() {

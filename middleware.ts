@@ -24,10 +24,19 @@ export async function middleware(request: NextRequest) {
     // Check if the route is protected
     const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
     const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
+    const isStaticAsset = pathname.startsWith('/_next') || pathname.startsWith('/static');
+
+    // Skip middleware for static assets
+    if (isStaticAsset) {
+        return NextResponse.next();
+    }
 
     // Allow public routes and handler routes (Stack Auth)
     if (isPublicRoute || pathname.startsWith('/handler')) {
-        return NextResponse.next();
+        const response = NextResponse.next();
+        // Add cache headers for public routes
+        response.headers.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
+        return response;
     }
 
     // Check authentication for protected routes
@@ -41,6 +50,11 @@ export async function middleware(request: NextRequest) {
                 signInUrl.searchParams.set('redirect', pathname);
                 return NextResponse.redirect(signInUrl);
             }
+
+            // Add no-cache headers for protected routes
+            const response = NextResponse.next();
+            response.headers.set('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+            return response;
         } catch (error) {
             // If there's an error getting the user, redirect to sign-in
             console.error('Middleware auth error:', error);

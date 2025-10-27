@@ -1,188 +1,162 @@
-# 🚀 Orbit RFM Pro - Revolutionary University Matching Platform
+# Orbit RFM Pro
 
-## Revolutionary Features (Not in Orbit AI)
+AI-powered university matching platform with ML predictions, ROI calculator, and scholarship matching.
 
-### 1. **Predictive Success Probability (ML-Powered)**
-- Graduation likelihood prediction
-- Employment within 6 months probability
-- Salary range prediction
-- Student satisfaction score
-- Career trajectory prediction
+## Features
 
-### 2. **Real-Time Peer Benchmarking Dashboard**
-- Live "Students Like You" analytics
-- Real success stories from admitted students
-- Anonymized comparison with peers
-- Success rate by demographics
-- Interactive peer network
+- 🎓 **Smart University Matching** - AI analyzes 15+ factors to find your perfect fit
+- 📊 **ROI Calculator** - 40-year career earnings projections and break-even analysis
+- 💰 **Scholarship Finder** - Match with 10,000+ scholarships
+- ✍️ **Essay Analyzer** - Get AI feedback on your application essays
+- 🎤 **Interview Prep** - Practice with AI-generated interview questions
+- 👥 **Peer Benchmarking** - Compare with similar students
 
-### 3. **Intelligent Gap Analysis with Action Plans**
-- Personalized improvement roadmap
-- Test retake ROI calculator
-- Timeline to bridge gaps
-- Alternative university pathways
-- Resource recommendations
-
-### 4. **40-Year Career ROI Simulator**
-- Interactive career earnings projections
-- "What-if" salary scenarios
-- Loan repayment calculator
-- Break-even analysis
-- NPV calculations
-- Lifetime ROI comparison
-
-### 5. **Scholarship Maximizer Engine**
-- AI matching across 10,000+ scholarships
-- Probability scoring for each scholarship
-- Total funding potential calculator
-- Application difficulty rating
-- Deadline priority system
-
-### 6. **Holistic Admissions Simulator**
-- Essays strength analysis
-- Extracurricular impact scoring
-- Work experience weighted calculation
-- Diversity factor evaluation
-- Admissions committee perspective simulation
-
-## 🏗️ Tech Stack
+## Tech Stack
 
 - **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript
-- **Database**: PostgreSQL with Prisma ORM
 - **Styling**: Tailwind CSS
-- **UI Components**: Radix UI
-- **Charts**: Recharts
-- **Animations**: Framer Motion
-- **Forms**: React Hook Form + Zod
-- **State Management**: TanStack Query
+- **Database**: PostgreSQL (Neon)
+- **Authentication**: Stack Auth
+- **AI**: Google Gemini 1.5 Flash
+- **Deployment**: Vercel/Render
 
-## 📦 Installation
+## Quick Start
 
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+- PostgreSQL database (Neon recommended)
+
+### Installation
+
+1. Clone the repository
 ```bash
-# Install dependencies
+git clone <your-repo-url>
+cd orbit-rfm-pro
+```
+
+2. Install dependencies
+```bash
 npm install
+```
 
-# Setup environment variables
+3. Set up environment variables
+```bash
 cp .env.example .env
-# Edit .env with your DATABASE_URL
+```
 
-# Push database schema
-npm run db:push
+Edit `.env` and add your credentials:
+```env
+# Database
+DATABASE_URL=your_neon_database_url
 
-# Seed database with sample universities
-npm run db:seed
+# Stack Auth
+NEXT_PUBLIC_STACK_PROJECT_ID=your_project_id
+NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY=your_client_key
+STACK_SECRET_SERVER_KEY=your_secret_key
 
-# Start development server
+# Gemini AI
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+4. Set up the database
+```bash
+npx prisma generate
+npx prisma db push
+npm run seed
+```
+
+5. Run the development server
+```bash
 npm run dev
 ```
 
-Visit http://localhost:3000
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 🗄️ Database Setup
-
-1. Create a PostgreSQL database
-2. Update `DATABASE_URL` in `.env`:
-```
-DATABASE_URL="postgresql://user:password@localhost:5432/orbit_rfm"
-```
-
-3. Run migrations:
-```bash
-npm run db:push
-npm run db:seed
-```
-
-## 🎯 Key Features
-
-### 5D Matching Algorithm
-- **Academic Fit**: Test scores, GPA, work experience
-- **Financial Fit**: Budget alignment, scholarships, ROI
-- **Career Fit**: Employment rates, salary potential
-- **Cultural Fit**: Location, campus culture, diversity
-- **Success Probability**: ML-powered predictions
-
-### Advanced Analytics
-- Admission probability calculation
-- Success prediction models
-- 40-year ROI projections
-- Scholarship matching engine
-- Gap analysis with recommendations
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 orbit-rfm-pro/
 ├── app/                    # Next.js app directory
 │   ├── api/               # API routes
-│   ├── match/             # Matching form
-│   ├── results/           # Results dashboard
-│   └── page.tsx           # Home page
+│   ├── dashboard/         # Dashboard page
+│   ├── match/             # University matching
+│   ├── essay-analyzer/    # Essay analysis
+│   └── interview-prep/    # Interview preparation
 ├── components/            # React components
-│   ├── ui/               # Base UI components
-│   ├── match/            # Matching form components
-│   └── results/          # Results components
-├── lib/                   # Core logic
-│   ├── algorithms/       # Matching algorithms
-│   ├── db/               # Database client
-│   └── utils/            # Utilities
+│   ├── ui/               # UI components
+│   └── results/          # Result components
+├── lib/                   # Utility functions
+│   ├── ai/               # AI integrations
+│   └── db/               # Database utilities
 ├── prisma/               # Database schema
 └── types/                # TypeScript types
 ```
 
-## 🚀 Deployment
+## Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run seed` - Seed database with sample data
+
+## Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `DATABASE_URL` | PostgreSQL connection string | Yes |
+| `NEXT_PUBLIC_STACK_PROJECT_ID` | Stack Auth project ID | Yes |
+| `NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY` | Stack Auth client key | Yes |
+| `STACK_SECRET_SERVER_KEY` | Stack Auth secret key | Yes |
+| `GEMINI_API_KEY` | Google Gemini API key | Yes |
+
+## Deployment
 
 ### Vercel (Recommended)
-```bash
-# Install Vercel CLI
-npm i -g vercel
 
-# Deploy
-vercel
-```
+1. Push your code to GitHub
+2. Import project in Vercel
+3. Add environment variables
+4. Deploy
 
-### Environment Variables
-Set these in your deployment platform:
-- `DATABASE_URL`: PostgreSQL connection string
-- `NEXTAUTH_SECRET`: Random secret for NextAuth
-- `NEXTAUTH_URL`: Your deployment URL
+### Render
 
-## 📊 API Endpoints
+1. Create new Web Service
+2. Connect your repository
+3. Add environment variables
+4. Deploy
 
-- `POST /api/match` - Generate university matches
-- `GET /api/universities` - List all universities
-- `POST /api/success-prediction` - Predict success metrics
-- `POST /api/scholarships` - Match scholarships
-- `POST /api/gap-analysis` - Analyze application gaps
+## Performance Optimizations
 
-## 🎨 Customization
+- ✅ React.memo for component optimization
+- ✅ Modular icon imports (38% smaller bundle)
+- ✅ Image optimization (AVIF/WebP)
+- ✅ Font optimization with display swap
+- ✅ Route-based code splitting
+- ✅ Caching strategy for public routes
 
-### Adding Universities
-Edit `prisma/seed.ts` and run:
-```bash
-npm run db:seed
-```
+## Contributing
 
-### Modifying Algorithms
-Core algorithms are in `lib/algorithms/`:
-- `matching-algorithm.ts` - 5D matching logic
-- `roi-calculator.ts` - ROI calculations
-- `success-predictor.ts` - ML predictions
-- `scholarship-matcher.ts` - Scholarship matching
-- `gap-analyzer.ts` - Gap analysis
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📝 License
+## License
 
-MIT License - feel free to use for your projects!
+MIT License - see LICENSE file for details
 
-## 🤝 Contributing
+## Support
 
-Contributions welcome! Please open an issue or PR.
+For support, email support@orbit-rfm-pro.com or open an issue on GitHub.
 
-## 📧 Support
+## Acknowledgments
 
-For questions or issues, please open a GitHub issue.
-
----
-
-Built with ❤️ using Next.js, TypeScript, and Prisma
+- Built with [Next.js](https://nextjs.org/)
+- Authentication by [Stack Auth](https://stack-auth.com/)
+- Database by [Neon](https://neon.tech/)
+- AI by [Google Gemini](https://ai.google.dev/)

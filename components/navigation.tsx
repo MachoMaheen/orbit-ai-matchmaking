@@ -4,13 +4,39 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, Sparkles, Menu, X } from 'lucide-react';
 import { UserButton, useUser } from '@stackframe/stack';
-import { Button } from './ui/button';
-import { useState } from 'react';
+import { useState, memo, useCallback } from 'react';
+
+const NavLink = memo(({ href, label, icon: Icon, isActive }: {
+    href: string;
+    label: string;
+    icon?: any;
+    isActive: boolean;
+}) => (
+    <Link
+        href={href}
+        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${isActive
+            ? 'bg-blue-50 text-blue-600 font-semibold shadow-sm'
+            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+            }`}
+    >
+        {Icon && <Icon className="w-4 h-4" />}
+        {label}
+    </Link>
+));
+NavLink.displayName = 'NavLink';
 
 export function Navigation() {
     const pathname = usePathname();
-    const user = useUser({ or: null }); // Return null instead of redirecting
+    const user = useUser({ or: null });
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    const toggleMobileMenu = useCallback(() => {
+        setMobileMenuOpen(prev => !prev);
+    }, []);
+
+    const closeMobileMenu = useCallback(() => {
+        setMobileMenuOpen(false);
+    }, []);
 
     // Public navigation items (shown to everyone)
     const publicNavItems = [
@@ -53,23 +79,15 @@ export function Navigation() {
 
                     {/* Desktop Nav Links */}
                     <div className="hidden md:flex items-center gap-1">
-                        {navItems.map((item) => {
-                            const Icon = item.icon;
-                            const isActive = pathname === item.href;
-                            return (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${isActive
-                                        ? 'bg-blue-50 text-blue-600 font-semibold shadow-sm'
-                                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                        }`}
-                                >
-                                    {Icon && <Icon className="w-4 h-4" />}
-                                    {item.label}
-                                </Link>
-                            );
-                        })}
+                        {navItems.map((item) => (
+                            <NavLink
+                                key={item.href}
+                                href={item.href}
+                                label={item.label}
+                                icon={item.icon}
+                                isActive={pathname === item.href}
+                            />
+                        ))}
                     </div>
 
                     {/* Auth Section */}
@@ -95,8 +113,9 @@ export function Navigation() {
 
                         {/* Mobile Menu Button */}
                         <button
-                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            onClick={toggleMobileMenu}
                             className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                            aria-label="Toggle menu"
                         >
                             {mobileMenuOpen ? (
                                 <X className="w-6 h-6 text-gray-600" />
@@ -119,7 +138,7 @@ export function Navigation() {
                                 <Link
                                     key={item.href}
                                     href={item.href}
-                                    onClick={() => setMobileMenuOpen(false)}
+                                    onClick={closeMobileMenu}
                                     className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActive
                                         ? 'bg-blue-50 text-blue-600 font-semibold'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -134,14 +153,14 @@ export function Navigation() {
                             <div className="pt-4 border-t border-gray-200 space-y-2">
                                 <Link
                                     href="/handler/sign-in"
-                                    onClick={() => setMobileMenuOpen(false)}
+                                    onClick={closeMobileMenu}
                                     className="block w-full text-center px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50 font-medium"
                                 >
                                     Sign In
                                 </Link>
                                 <Link
                                     href="/handler/sign-up"
-                                    onClick={() => setMobileMenuOpen(false)}
+                                    onClick={closeMobileMenu}
                                     className="block w-full text-center px-4 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-md"
                                 >
                                     Get Started Free

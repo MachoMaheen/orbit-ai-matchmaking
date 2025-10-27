@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
 export async function analyzeEssay(essay: string) {
     const prompt = `You are an expert college admissions essay reviewer. Analyze this college application essay and provide detailed feedback.

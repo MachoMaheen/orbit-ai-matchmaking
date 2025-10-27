@@ -3,29 +3,75 @@
 import { useUser } from '@stackframe/stack';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
+import { memo } from 'react';
 import {
     GraduationCap,
     FileText,
     MessageSquare,
-    TrendingUp,
     Clock,
-    CheckCircle2,
     AlertCircle,
     BarChart3,
 } from 'lucide-react';
+
+const LoadingSpinner = () => (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+            <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading your dashboard...</p>
+        </div>
+    </div>
+);
+
+const StatCard = memo(({ title, value, subtitle, icon: Icon, iconColor }: {
+    title: string;
+    value: string | number;
+    subtitle: string;
+    icon: any;
+    iconColor: string;
+}) => (
+    <Card className="p-6">
+        <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-sm">{title}</span>
+            <Icon className={`w-5 h-5 ${iconColor}`} />
+        </div>
+        <div className="text-3xl font-bold text-gray-900">{value}</div>
+        <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
+    </Card>
+));
+StatCard.displayName = 'StatCard';
+
+const QuickActionCard = memo(({ href, icon: Icon, title, subtitle, bgColor, iconBg, textColor }: {
+    href: string;
+    icon: any;
+    title: string;
+    subtitle: string;
+    bgColor: string;
+    iconBg: string;
+    textColor: string;
+}) => (
+    <Link
+        href={href}
+        className={`flex items-center justify-between p-4 ${bgColor} rounded-lg transition-colors group`}
+    >
+        <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 ${iconBg} rounded-lg flex items-center justify-center`}>
+                <Icon className="w-5 h-5 text-white" />
+            </div>
+            <div>
+                <div className="font-semibold text-gray-900">{title}</div>
+                <div className="text-sm text-gray-600">{subtitle}</div>
+            </div>
+        </div>
+        <div className={`${textColor} group-hover:translate-x-1 transition-transform`}>→</div>
+    </Link>
+));
+QuickActionCard.displayName = 'QuickActionCard';
 
 export default function DashboardPage() {
     const user = useUser();
 
     if (!user) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading your dashboard...</p>
-                </div>
-            </div>
-        );
+        return <LoadingSpinner />;
     }
 
     return (
@@ -41,41 +87,34 @@ export default function DashboardPage() {
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <Card className="p-6">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-gray-600 text-sm">Universities Matched</span>
-                            <GraduationCap className="w-5 h-5 text-blue-600" />
-                        </div>
-                        <div className="text-3xl font-bold text-gray-900">0</div>
-                        <p className="text-xs text-gray-500 mt-1">Start matching to see results</p>
-                    </Card>
-
-                    <Card className="p-6">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-gray-600 text-sm">Essays Analyzed</span>
-                            <FileText className="w-5 h-5 text-green-600" />
-                        </div>
-                        <div className="text-3xl font-bold text-gray-900">0</div>
-                        <p className="text-xs text-gray-500 mt-1">Get AI feedback on essays</p>
-                    </Card>
-
-                    <Card className="p-6">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-gray-600 text-sm">Interview Prep</span>
-                            <MessageSquare className="w-5 h-5 text-purple-600" />
-                        </div>
-                        <div className="text-3xl font-bold text-gray-900">0</div>
-                        <p className="text-xs text-gray-500 mt-1">Practice sessions completed</p>
-                    </Card>
-
-                    <Card className="p-6">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-gray-600 text-sm">Profile Strength</span>
-                            <BarChart3 className="w-5 h-5 text-orange-600" />
-                        </div>
-                        <div className="text-3xl font-bold text-gray-900">0%</div>
-                        <p className="text-xs text-gray-500 mt-1">Complete your profile</p>
-                    </Card>
+                    <StatCard
+                        title="Universities Matched"
+                        value={0}
+                        subtitle="Start matching to see results"
+                        icon={GraduationCap}
+                        iconColor="text-blue-600"
+                    />
+                    <StatCard
+                        title="Essays Analyzed"
+                        value={0}
+                        subtitle="Get AI feedback on essays"
+                        icon={FileText}
+                        iconColor="text-green-600"
+                    />
+                    <StatCard
+                        title="Interview Prep"
+                        value={0}
+                        subtitle="Practice sessions completed"
+                        icon={MessageSquare}
+                        iconColor="text-purple-600"
+                    />
+                    <StatCard
+                        title="Profile Strength"
+                        value="0%"
+                        subtitle="Complete your profile"
+                        icon={BarChart3}
+                        iconColor="text-orange-600"
+                    />
                 </div>
 
                 {/* Main Content Grid */}
@@ -85,53 +124,33 @@ export default function DashboardPage() {
                         <Card className="p-6">
                             <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
                             <div className="space-y-3">
-                                <Link
+                                <QuickActionCard
                                     href="/match"
-                                    className="flex items-center justify-between p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors group"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                                            <GraduationCap className="w-5 h-5 text-white" />
-                                        </div>
-                                        <div>
-                                            <div className="font-semibold text-gray-900">Find University Matches</div>
-                                            <div className="text-sm text-gray-600">Get AI-powered recommendations</div>
-                                        </div>
-                                    </div>
-                                    <div className="text-blue-600 group-hover:translate-x-1 transition-transform">→</div>
-                                </Link>
-
-                                <Link
+                                    icon={GraduationCap}
+                                    title="Find University Matches"
+                                    subtitle="Get AI-powered recommendations"
+                                    bgColor="bg-blue-50 hover:bg-blue-100"
+                                    iconBg="bg-blue-600"
+                                    textColor="text-blue-600"
+                                />
+                                <QuickActionCard
                                     href="/essay-analyzer"
-                                    className="flex items-center justify-between p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors group"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
-                                            <FileText className="w-5 h-5 text-white" />
-                                        </div>
-                                        <div>
-                                            <div className="font-semibold text-gray-900">Analyze Your Essay</div>
-                                            <div className="text-sm text-gray-600">Get instant AI feedback</div>
-                                        </div>
-                                    </div>
-                                    <div className="text-green-600 group-hover:translate-x-1 transition-transform">→</div>
-                                </Link>
-
-                                <Link
+                                    icon={FileText}
+                                    title="Analyze Your Essay"
+                                    subtitle="Get instant AI feedback"
+                                    bgColor="bg-green-50 hover:bg-green-100"
+                                    iconBg="bg-green-600"
+                                    textColor="text-green-600"
+                                />
+                                <QuickActionCard
                                     href="/interview-prep"
-                                    className="flex items-center justify-between p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors group"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
-                                            <MessageSquare className="w-5 h-5 text-white" />
-                                        </div>
-                                        <div>
-                                            <div className="font-semibold text-gray-900">Practice Interviews</div>
-                                            <div className="text-sm text-gray-600">Prepare with AI coach</div>
-                                        </div>
-                                    </div>
-                                    <div className="text-purple-600 group-hover:translate-x-1 transition-transform">→</div>
-                                </Link>
+                                    icon={MessageSquare}
+                                    title="Practice Interviews"
+                                    subtitle="Prepare with AI coach"
+                                    bgColor="bg-purple-50 hover:bg-purple-100"
+                                    iconBg="bg-purple-600"
+                                    textColor="text-purple-600"
+                                />
                             </div>
                         </Card>
 

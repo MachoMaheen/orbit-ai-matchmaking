@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useUser } from '@stackframe/stack';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, memo } from 'react';
 import { ArrowRight, Brain, TrendingUp, Award, Users, Target, Sparkles, FileText, MessageSquare } from 'lucide-react';
 
 export default function HomePage() {
@@ -208,21 +208,19 @@ export default function HomePage() {
     );
 }
 
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
-    return (
-        <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-            <div className="mb-4">{icon}</div>
-            <h3 className="text-xl font-bold mb-2">{title}</h3>
-            <p className="text-gray-600">{description}</p>
-        </div>
-    );
-}
+const FeatureCard = memo(({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
+    <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+        <div className="mb-4">{icon}</div>
+        <h3 className="text-xl font-bold mb-2">{title}</h3>
+        <p className="text-gray-600">{description}</p>
+    </div>
+));
+FeatureCard.displayName = 'FeatureCard';
 
-function StatCard({ number, label }: { number: string; label: string }) {
-    return (
-        <div className="bg-white p-6 rounded-xl shadow-lg text-center">
-            <div className="text-3xl font-bold text-blue-600 mb-2">{number}</div>
-            <div className="text-gray-600">{label}</div>
-        </div>
-    );
-}
+const StatCard = memo(({ number, label }: { number: string; label: string }) => (
+    <div className="bg-white p-6 rounded-xl shadow-lg text-center">
+        <div className="text-3xl font-bold text-blue-600 mb-2">{number}</div>
+        <div className="text-gray-600">{label}</div>
+    </div>
+));
+StatCard.displayName = 'StatCard';
