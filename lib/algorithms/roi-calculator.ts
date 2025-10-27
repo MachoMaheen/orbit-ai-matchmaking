@@ -77,7 +77,7 @@ function getGrowthRate(industry?: string): number {
         'Default': 0.045,
     };
 
-    return rates[industry] || rates.Default;
+    return (industry && rates[industry]) || rates.Default;
 }
 
 function calculateBreakEven(

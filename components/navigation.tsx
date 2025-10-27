@@ -27,7 +27,7 @@ NavLink.displayName = 'NavLink';
 
 export function Navigation() {
     const pathname = usePathname();
-    const user = useUser({ or: null });
+    const user = useUser();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const toggleMobileMenu = useCallback(() => {
@@ -39,14 +39,14 @@ export function Navigation() {
     }, []);
 
     // Public navigation items (shown to everyone)
-    const publicNavItems = [
+    const publicNavItems: Array<{ href: string; label: string; icon?: any }> = [
         { href: '/', label: 'Home' },
         { href: '/#features', label: 'Features' },
         { href: '/#how-it-works', label: 'How It Works' },
     ];
 
     // Protected navigation items (shown only to authenticated users)
-    const protectedNavItems = [
+    const protectedNavItems: Array<{ href: string; label: string; icon?: any }> = [
         { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { href: '/match', label: 'Find Matches' },
         { href: '/essay-analyzer', label: 'Essay Analyzer' },
